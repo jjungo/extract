@@ -13,6 +13,16 @@
 # ./extract <archive> # extract here
 # ./extract <archive> <output direcory> # extract into output directory
 
+
+function display_help {
+    echo "
+Examples:
+    ./extract -h                            # display this help
+    ./extract <archive>                     # extract here
+    ./extract <archive> <output direcory>   # extract into output directory"
+    exit -1
+}
+
 echo "**************************"
 echo "* Simple extracting tool *"
 echo "**************************"
@@ -51,5 +61,6 @@ case "$1" in
         7z x $1 -o$2
         ;;
     *)
+    display_help
         ;;
 esac
