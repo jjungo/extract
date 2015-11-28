@@ -17,10 +17,16 @@
 function display_help {
     echo "
 Examples:
-    ./extract -h                            # display this help
+    ./extract                               # display this help
     ./extract <archive>                     # extract here
     ./extract <archive> <output direcory>   # extract into output directory"
     exit -1
+}
+
+function mk_output_dir {
+    if [ ! -z $1 ] && [ ! -f $1 ]; then
+        mkdir -p $1
+    fi
 }
 
 echo "**************************"
@@ -33,34 +39,46 @@ if [ ! -f $1 ]; then
     exit -1
 fi
 
-if [ ! -z $2 ] && [ ! -f $2 ]; then
-    OUTPUT="$2"
-    mkdir $2
+if [ -f $1 ]; then
+    OUTPUT_EXIST=true
 else
-    OUTPUT="."
+    OUTPUT_EXIST=false
 fi
 
 ## Exctract
+OUTPUT=$2
 case "$1" in
     *.tar )
-        tar xvf $1 -C $2
-        ;;
+        mk_output_dir $2
+        tar xvf $1 -C $OUTPUT
+    ;;
     *tar.gz )
-        tar xvzf $1 -C $2
-        ;;
+        mk_output_dir $2
+        tar xvzf $1 -C $OUTPUT
+    ;;
     *tar.bz2 )
-        tar xvjf $1 -C $2
-        ;;
+        mk_output_dir $2
+        tar xvjf $1 -C $OUTPUT
+    ;;
     *tar.xz )
-        tar xJvf $1 -C $2
-        ;;
+        mk_output_dir $2
+        tar xJvf $1 -C $OUTPUT
+    ;;
     *zip )
-        unzip $1 -d $2
-        ;;
+        mk_output_dir $2
+        unzip $1 -d $OUTPUT
+    ;;
     *7z )
-        7z x $1 -o$2
-        ;;
+        mk_output_dir $2
+        7z x $1 -o$OUTPUT
+    ;;
     *)
-    display_help
-        ;;
+        if  ! $OUTPUT_EXIST ; then
+            rm -r
+        fi
+        if [ ! -z $1 ] ; then
+            echo "Bad input file, or not yet implemented."
+        fi
+        display_help
+    ;;
 esac
