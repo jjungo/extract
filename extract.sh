@@ -35,7 +35,7 @@ fi
 
 if [ ! -z $2 ] && [ ! -f $2 ]; then
     OUTPUT="$2"
-    mkdir $2
+    mkdir -p $2
 else
     OUTPUT="."
 fi
